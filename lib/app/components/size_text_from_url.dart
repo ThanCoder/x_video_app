@@ -7,7 +7,10 @@ class SizeTextFromUrl extends StatelessWidget {
   String url;
   SizeTextFromUrl({super.key, required this.url});
 
-  final dio = Dio();
+  final dio = Dio(BaseOptions(
+    connectTimeout: Duration(seconds: 5),
+    receiveTimeout: Duration(seconds: 5),
+  ));
 
   @override
   Widget build(BuildContext context) {

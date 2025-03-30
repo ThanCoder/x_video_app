@@ -28,7 +28,10 @@ class BookmarkScreen extends StatelessWidget {
             return GridView.builder(
               itemCount: list.length,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
+                maxCrossAxisExtent: 180,
+                mainAxisExtent: 200,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
               ),
               itemBuilder: (context, index) => MovieGridItem(
                 movie: list[index],

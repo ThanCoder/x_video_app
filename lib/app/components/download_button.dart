@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:xp_downloader/app/components/core/index.dart';
 import 'package:xp_downloader/app/components/size_text_from_url.dart';
 import 'package:xp_downloader/app/dialogs/index.dart';
-import 'package:xp_downloader/app/notifiers/app_notifier.dart';
 import 'package:xp_downloader/app/screens/video_player_screen.dart';
+import 'package:xp_downloader/app/services/core/app_services.dart';
+import 'package:xp_downloader/app/services/index.dart';
 
 class DownloadButton extends StatefulWidget {
   String title;
@@ -55,8 +57,8 @@ class _DownloadButtonState extends State<DownloadButton> {
       context: context,
       barrierDismissible: false,
       builder: (context) => DownloadDialog(
-        title: 'Downlaoding...',
-        url: '${appConfigNotifier.value.forwardProxyUrl}?url=${widget.url}',
+        title: 'Downloading...',
+        url: DioServices.instance.getForwardProxyUrl(widget.url),
         saveFullPath: widget.savePath,
         message: widget.title,
         onError: (msg) {},
@@ -81,25 +83,32 @@ class _DownloadButtonState extends State<DownloadButton> {
                   Icon(isExists ? Icons.download_done_rounded : Icons.download),
             ),
             SizeTextFromUrl(
-                url:
-                    '${appConfigNotifier.value.forwardProxyUrl}?url=${widget.url}'),
+              url: DioServices.instance.getForwardProxyUrl(widget.url),
+            ),
           ],
         ),
         //watch
         TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VideoPlayerScreen(
-                    title: '',
-                    url:
-                        '${appConfigNotifier.value.forwardProxyUrl}?url=${widget.url}',
-                  ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoPlayerScreen(
+                  title: '',
+                  url: DioServices.instance.getForwardProxyUrl(widget.url),
                 ),
-              );
-            },
-            child: Text('Watch')),
+              ),
+            );
+          },
+          child: Text('Watch'),
+        ),
+        IconButton(
+          onPressed: () {
+            copyText(widget.url);
+            showMessage(context, 'ကူယူပြီပါပြီ');
+          },
+          icon: Icon(Icons.copy),
+        ),
       ],
     );
   }

@@ -21,7 +21,6 @@ class XMovieProvider with ChangeNotifier {
       notifyListeners();
       if (isOverrideList) {
         _list.clear();
-        isOverrideList = false;
       }
       final res = await XServices.instance.getList(
         url: appConfigNotifier.value.hostUrl,
@@ -30,6 +29,7 @@ class XMovieProvider with ChangeNotifier {
       );
       _list.addAll(res);
       isLoading = false;
+      isOverrideList = false;
       notifyListeners();
     } catch (e) {
       isLoading = false;

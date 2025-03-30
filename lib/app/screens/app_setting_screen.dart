@@ -29,14 +29,16 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
   bool isCustomPathTextControllerTextSelected = false;
   late AppConfigModel config;
   TextEditingController customPathTextController = TextEditingController();
-  TextEditingController proxyAddressController = TextEditingController();
-  TextEditingController proxyPortController = TextEditingController();
+  TextEditingController hostUrlController = TextEditingController();
+  TextEditingController forwardProxyController = TextEditingController();
+  TextEditingController browserProxyController = TextEditingController();
 
   void init() async {
     customPathTextController.text = '${getAppExternalRootPath()}/.$appName';
     config = appConfigNotifier.value;
-    proxyAddressController.text = config.proxyAddress;
-    proxyPortController.text = config.proxyPort;
+    hostUrlController.text = config.hostUrl;
+    forwardProxyController.text = config.forwardProxyUrl;
+    browserProxyController.text = config.browserProxyUrl;
   }
 
   void _saveConfig() async {
@@ -51,8 +53,9 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       }
       //set custom path
       config.customPath = customPathTextController.text;
-      config.proxyAddress = proxyAddressController.text;
-      config.proxyPort = proxyPortController.text;
+      config.hostUrl = hostUrlController.text;
+      config.forwardProxyUrl = forwardProxyController.text;
+      config.browserProxyUrl = browserProxyController.text;
       //save
       setConfigFile(config);
       appConfigNotifier.value = config;
@@ -108,101 +111,92 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         appBar: AppBar(
           title: const Text('Setting'),
         ),
-        body: ListView(
-          children: [
-            //custom path
-            ListTileWithDesc(
-              title: "custom path",
-              desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
-              trailing: Checkbox(
-                value: config.isUseCustomPath,
-                onChanged: (value) {
-                  setState(() {
-                    config.isUseCustomPath = value!;
-                    isChanged = true;
-                  });
-                },
+        body: SingleChildScrollView(
+          child: Column(
+            spacing: 10,
+            children: [
+              //custom path
+              ListTileWithDesc(
+                title: "custom path",
+                desc: "သင်ကြိုက်နှစ်သက်တဲ့ path ကို ထည့်ပေးပါ",
+                trailing: Checkbox(
+                  value: config.isUseCustomPath,
+                  onChanged: (value) {
+                    setState(() {
+                      config.isUseCustomPath = value!;
+                      isChanged = true;
+                    });
+                  },
+                ),
               ),
-            ),
-            config.isUseCustomPath
-                ? ListTileWithDescWidget(
-                    widget1: TextField(
-                      controller: customPathTextController,
-                      onTap: () {
-                        if (!isCustomPathTextControllerTextSelected) {
-                          customPathTextController.selectAll();
-                          isCustomPathTextControllerTextSelected = true;
-                        }
-                      },
-                      onTapOutside: (event) {
-                        isCustomPathTextControllerTextSelected = false;
-                      },
-                    ),
-                    widget2: IconButton(
-                      onPressed: () {
-                        _saveConfig();
-                      },
-                      icon: const Icon(
-                        Icons.save,
+              config.isUseCustomPath
+                  ? ListTileWithDescWidget(
+                      widget1: TextField(
+                        controller: customPathTextController,
+                        onTap: () {
+                          if (!isCustomPathTextControllerTextSelected) {
+                            customPathTextController.selectAll();
+                            isCustomPathTextControllerTextSelected = true;
+                          }
+                        },
+                        onTapOutside: (event) {
+                          isCustomPathTextControllerTextSelected = false;
+                        },
                       ),
-                    ),
-                  )
-                : SizedBox.shrink(),
-            //proxy server
-            //custom path
-            ListTileWithDesc(
-              title: "Proxy Server",
-              desc: "192.168.191.253:8080",
-              trailing: Checkbox(
-                value: config.isUseProxyServer,
+                      widget2: IconButton(
+                        onPressed: () {
+                          _saveConfig();
+                        },
+                        icon: const Icon(
+                          Icons.save,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              //host
+              TTextField(
+                controller: hostUrlController,
+                label: Text('Host Url'),
                 onChanged: (value) {
+                  if (value.isEmpty) {
+                    hostUrlController.text = appHostUrl;
+                    return;
+                  }
                   setState(() {
-                    config.isUseProxyServer = value!;
                     isChanged = true;
                   });
                 },
               ),
-            ),
-            if (config.isUseProxyServer)
-              Column(
-                spacing: 5,
-                children: [
-                  Text('Proxy'),
-                  Card(
-                    child: Row(
-                      spacing: 5,
-                      children: [
-                        Expanded(
-                          child: TTextField(
-                            controller: proxyAddressController,
-                            hintText: '192.168.191.253',
-                            onChanged: (value) {
-                              setState(() {
-                                isChanged = true;
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: TTextField(
-                            controller: proxyPortController,
-                            hintText: '8080',
-                            onChanged: (value) {
-                              setState(() {
-                                isChanged = true;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            else
-              SizedBox.shrink(),
-          ],
+              //forward proxy
+              TTextField(
+                controller: forwardProxyController,
+                label: Text('Forward Proxy'),
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    forwardProxyController.text = appForwardProxyHostUrl;
+                    return;
+                  }
+                  setState(() {
+                    isChanged = true;
+                  });
+                },
+              ),
+              //browser proxy
+              TTextField(
+                controller: browserProxyController,
+                label: Text('Browser Proxy'),
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    browserProxyController.text = appBrowserProxyHostUrl;
+                    return;
+                  }
+                  setState(() {
+                    isChanged = true;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
         floatingActionButton: isChanged
             ? FloatingActionButton(

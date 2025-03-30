@@ -2,6 +2,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as html;
 import 'package:xp_downloader/app/notifiers/app_notifier.dart';
+import 'package:xp_downloader/app/services/html_query_selector_services.dart';
 
 class XMovieModel {
   String title;
@@ -18,28 +19,11 @@ class XMovieModel {
   });
 
   factory XMovieModel.fromHtmlElement(html.Element ele) {
-    var title = '';
-    var url = '';
-    var coverUrl = '';
-    var time = '';
+    var title = getQuerySelectorAttr(ele, '.title a', 'title');
+    var url = getQuerySelectorAttr(ele, '.title a', 'href');
+    var coverUrl = getQuerySelectorAttr(ele, '.thumb img', 'src');
+    var time = getQuerySelectorText(ele, '.duration');
 
-    try {
-      final imgTag = ele.querySelector('.thumb a img');
-      coverUrl = imgTag!.attributes['src'] ?? '';
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    try {
-      //a tag
-      final aTag = ele.querySelector('.title a')!;
-      title = aTag.attributes['title'] ?? '';
-      url = aTag.attributes['href'] ?? '';
-
-      //time
-      time = ele.querySelector('.duration')!.text;
-    } catch (e) {
-      debugPrint(e.toString());
-    }
     try {
       if (ele.querySelector('.videopv a') != null) {
         final videoTag = ele.querySelector('.videopv a')!;

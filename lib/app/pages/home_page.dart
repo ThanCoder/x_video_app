@@ -75,49 +75,49 @@ class _HomePageState extends State<HomePage> {
           context.read<XMovieProvider>().setListOverride(true);
           init();
         },
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            SliverToBoxAdapter(
-              child: !isLoadData && isLoading ? TLoader() : SizedBox.shrink(),
-            ),
-            //list
-            SliverGrid.builder(
-              itemCount: list.length,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                mainAxisExtent: 220,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
+        child: !isLoadData && isLoading
+            ? TLoader()
+            : CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  //list
+                  SliverGrid.builder(
+                    itemCount: list.length,
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      mainAxisExtent: 220,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                    ),
+                    itemBuilder: (context, index) {
+                      final movie = list[index];
+                      return MovieGridItem(
+                        movie: movie,
+                        onClicked: (movie) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MovieContentScreen(movie: movie),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  //loader
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: isLoadData && isLoading
+                          ? TLoader(
+                              size: 30,
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                  ),
+                ],
               ),
-              itemBuilder: (context, index) {
-                final movie = list[index];
-                return MovieGridItem(
-                  movie: movie,
-                  onClicked: (movie) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieContentScreen(movie: movie),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-            //loader
-            SliverToBoxAdapter(
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: isLoadData && isLoading
-                    ? TLoader(
-                        size: 30,
-                      )
-                    : SizedBox.shrink(),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

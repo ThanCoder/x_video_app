@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xp_downloader/app/components/cache_image.dart';
 import 'package:xp_downloader/app/models/x_movie_model.dart';
-import 'package:xp_downloader/app/notifiers/app_notifier.dart';
+import 'package:xp_downloader/app/services/index.dart';
 
 class MovieGridItem extends StatelessWidget {
   XMovieModel movie;
@@ -14,8 +14,7 @@ class MovieGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coverUrl =
-        '${appConfigNotifier.value.forwardProxyUrl}?url=${movie.coverUrl}';
+    final coverUrl = DioServices.instance.getForwardProxyUrl(movie.coverUrl);
 
     return GestureDetector(
       onTap: () => onClicked(movie),

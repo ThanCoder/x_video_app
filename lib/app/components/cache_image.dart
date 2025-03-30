@@ -79,6 +79,7 @@ class _CacheImageState extends State<CacheImage> {
         fit: widget.fit,
         width: widget.width,
         height: widget.height,
+        filterQuality: FilterQuality.high,
         errorBuilder: (context, error, stackTrace) {
           file.deleteSync();
           return _getAssetsImage();
