@@ -16,11 +16,11 @@ class XMovieProvider with ChangeNotifier {
 
   Future<void> initList() async {
     try {
-      page = 1;
       isLoading = true;
       notifyListeners();
       if (isOverrideList) {
         _list.clear();
+        page = 1;
       }
       final res = await XServices.instance.getList(
         url: appConfigNotifier.value.hostUrl,
@@ -44,6 +44,7 @@ class XMovieProvider with ChangeNotifier {
       notifyListeners();
       final res = await XServices.instance.getList(
         url: '${appConfigNotifier.value.hostUrl}/new/$page',
+        isOverride: true,
       );
       page++;
       _list.addAll(res);

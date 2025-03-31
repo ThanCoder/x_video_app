@@ -28,6 +28,7 @@ class MovieGridItem extends StatelessWidget {
                   child: CacheImage(
                     url: coverUrl,
                     width: double.infinity,
+                    fit: BoxFit.fill,
                   ),
                 ),
               ],
