@@ -29,6 +29,10 @@ class DioServices {
     return '${appConfigNotifier.value.forwardProxyUrl}?url=$targetUrl';
   }
 
+  String getForwardProxyStreamUrl(String targetUrl) {
+    return '${appConfigNotifier.value.forwardProxyUrl}/stream?url=$targetUrl';
+  }
+
   String getBrowserProxyUrl(String targetUrl) {
     return '${appConfigNotifier.value.browserProxyUrl}?url=$targetUrl';
   }

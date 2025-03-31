@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:xp_downloader/app/github_hosting_server/browser_proxy_t_text_field.dart';
+import 'package:xp_downloader/app/github_hosting_server/forward_proxy_t_text_field.dart';
 
 import '../extensions/index.dart';
 import '../components/index.dart';
@@ -168,28 +170,26 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                 },
               ),
               //forward proxy
-              TTextField(
+              ForwardProxyTTextField(
                 controller: forwardProxyController,
-                label: Text('Forward Proxy'),
                 onChanged: (value) {
-                  if (value.isEmpty) {
-                    forwardProxyController.text = appForwardProxyHostUrl;
-                    return;
-                  }
+                  // if (value.isEmpty) {
+                  //   hostUrlController.text = appHostUrl;
+                  //   return;
+                  // }
                   setState(() {
                     isChanged = true;
                   });
                 },
               ),
               //browser proxy
-              TTextField(
+              BrowserProxyTTextField(
                 controller: browserProxyController,
-                label: Text('Browser Proxy'),
                 onChanged: (value) {
-                  if (value.isEmpty) {
-                    browserProxyController.text = appBrowserProxyHostUrl;
-                    return;
-                  }
+                  // if (value.isEmpty) {
+                  //   browserProxyController.text = appBrowserProxyHostUrl;
+                  //   return;
+                  // }
                   setState(() {
                     isChanged = true;
                   });
