@@ -42,7 +42,8 @@ class BookmarkServices {
       var list = await getList();
       list = list.where((mv) => mv.title != movie.title).toList();
       //save
-      await dbFile.writeAsString(jsonEncode(list));
+      final data = list.map((mv) => mv.toMap()).toList();
+      await dbFile.writeAsString(jsonEncode(data));
     } catch (e) {
       debugPrint('remove: ${e.toString()}');
     }

@@ -55,6 +55,18 @@ class MovieGridItem extends StatelessWidget {
                 ),
               ),
             ),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(209, 8, 8, 8),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Text(
+                movie.time,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ],
         ),
       ),

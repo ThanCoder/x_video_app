@@ -24,6 +24,10 @@ class XMovieModel {
     var coverUrl = getQuerySelectorAttr(ele, '.thumb img', 'src');
     var time = getQuerySelectorText(ele, '.duration');
 
+    if (coverUrl.isEmpty) {
+      coverUrl = getQuerySelectorAttr(ele, '.thumb a', 'data-src');
+    }
+
     try {
       if (ele.querySelector('.videopv a') != null) {
         final videoTag = ele.querySelector('.videopv a')!;

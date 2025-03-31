@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:xp_downloader/app/components/translate_text_widget.dart';
 import 'package:xp_downloader/app/widgets/index.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   String title;
-  String url;
+  String source;
   VideoPlayerScreen({
     super.key,
     required this.title,
-    required this.url,
+    required this.source,
   });
 
   @override
@@ -41,14 +42,16 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   Future<void> init() async {
-    await player.open(Media(widget.url), play: true);
+    await player.open(Media(widget.source), play: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
       contentPadding: 0,
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: TranslateTextWidget(text: widget.title),
+      ),
       body: Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,

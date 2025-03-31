@@ -72,8 +72,7 @@ class _DownloadButtonState extends State<DownloadButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
       children: [
         Row(
           children: [
@@ -90,15 +89,28 @@ class _DownloadButtonState extends State<DownloadButton> {
         //watch
         TextButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VideoPlayerScreen(
-                  title: '',
-                  url: DioServices.instance.getForwardProxyUrl(widget.url),
+            //file ရှိနေရင်
+            if (isExists) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerScreen(
+                    title: widget.title,
+                    source: widget.savePath,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerScreen(
+                    title: widget.title,
+                    source: DioServices.instance.getForwardProxyUrl(widget.url),
+                  ),
+                ),
+              );
+            }
           },
           child: Text('Watch'),
         ),

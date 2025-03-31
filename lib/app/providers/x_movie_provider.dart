@@ -38,7 +38,7 @@ class XMovieProvider with ChangeNotifier {
     }
   }
 
-  void loadList() async {
+  Future<void> loadList() async {
     try {
       isLoading = true;
       notifyListeners();

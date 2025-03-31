@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as html;
 import 'package:xp_downloader/app/extensions/string_extension.dart';
 import 'package:xp_downloader/app/models/x_movie_model.dart' show XMovieModel;
+import 'package:xp_downloader/app/services/html_query_selector_services.dart';
 import 'package:xp_downloader/app/services/index.dart';
 
 class XServices {
@@ -72,6 +73,11 @@ class XServices {
     return '';
   }
 
+  String getVideoTitle(String htmlStr) {
+    final dom = html.Document.html(htmlStr);
+    return getQuerySelectorTextDom(dom, '#title-auto-tr');
+  }
+
   Future<List<XMovieModel>> getList({
     required String url,
     String? cacheName,
@@ -110,6 +116,24 @@ class XServices {
         cacheName: cacheName ?? 'index.html',
         isOverride: isOverride,
       ));
+      final eles = dom.querySelectorAll('#related-videos .mozaique > div');
+
+      for (var ele in eles) {
+        final imgTag = ele.querySelector('.thumb-related-exo');
+        if (imgTag == null) continue;
+        final movie = XMovieModel.fromHtmlElement(ele);
+        list.add(movie);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return list;
+  }
+
+  Future<List<XMovieModel>> getContentListFromHtml(String htmlStr) async {
+    List<XMovieModel> list = [];
+    try {
+      final dom = html.Document.html(htmlStr);
       final eles = dom.querySelectorAll('#related-videos .mozaique > div');
 
       for (var ele in eles) {

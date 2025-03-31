@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 //debug
 const isDebugPrint = false;
 const appHostUrl = 'https://www.xvideos.com';
-// const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
 const appBrowserProxyHostUrl = 'https://node-browser.vercel.app';
 const appForwardProxyHostUrl = 'https://thanproxy-production.up.railway.app';
+// const appBrowserProxyHostUrl = 'https://nodebrowser-production.up.railway.app';
 // const appForwardProxyHostUrl = 'https://express-forward-proxy.vercel.app';
 
 //assets

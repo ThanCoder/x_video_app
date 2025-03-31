@@ -5,10 +5,11 @@ import 'package:xp_downloader/app/components/bookmark_button.dart';
 import 'package:xp_downloader/app/components/cache_image.dart';
 import 'package:xp_downloader/app/components/download_button.dart';
 import 'package:xp_downloader/app/components/movie_grid_item.dart';
+import 'package:xp_downloader/app/components/translate_text_widget.dart';
 import 'package:xp_downloader/app/models/x_movie_model.dart';
 import 'package:xp_downloader/app/notifiers/app_notifier.dart';
 import 'package:xp_downloader/app/services/core/app_services.dart';
-import 'package:xp_downloader/app/services/x_services.dart';
+import 'package:xp_downloader/app/services/index.dart';
 import 'package:xp_downloader/app/utils/index.dart';
 import 'package:xp_downloader/app/widgets/index.dart';
 
@@ -30,6 +31,7 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
   bool isLoading = false;
   bool isOverride = false;
   List<XMovieModel> list = [];
+  String downloadUrl = '';
 
   void init() async {
     try {
@@ -38,11 +40,21 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
         isLoading = true;
       });
       String url = '${widget.movie.url}#show-related';
-      list = await XServices.instance.getContentList(
-        url: url,
-        isOverride: isOverride,
+      String htmlStr = await DioServices.instance.getCacheHtml(
+        url: DioServices.instance.getBrowserProxyUrl(url),
         cacheName: '${widget.movie.title}.html',
+        isOverride: isOverride,
       );
+
+      final videoTitle = XServices.instance.getVideoTitle(htmlStr);
+      if (videoTitle.isNotEmpty) {
+        widget.movie.title = videoTitle;
+      }
+      // File('content.html').writeAsStringSync(htmlStr);
+
+      downloadUrl = XServices.instance.getVideoUrl(htmlStr);
+
+      list = await XServices.instance.getContentListFromHtml(htmlStr);
 
       if (!mounted) return;
       setState(() {
@@ -59,35 +71,14 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
   }
 
   Widget _getDownloadButton() {
-    return FutureBuilder(
-      future: XServices.instance.getMovieContent(
-        '${widget.movie.url}#show-related',
-        cacheName: '${widget.movie.title}.html',
-        isOverride: true,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            width: 25,
-            height: 25,
-            child: TLoader(size: 25),
-          );
-        }
-        if (snapshot.hasData) {
-          String url = XServices.instance.getVideoUrl(snapshot.data!);
-          if (url.isEmpty) {
-            return SizedBox.shrink();
-          }
-          return DownloadButton(
-            title: widget.movie.title,
-            savePath:
-                '${PathUtil.instance.getOutPath()}/${widget.movie.title}.mp4',
-            url: url,
-            onDoned: () {},
-          );
-        }
-        return SizedBox.shrink();
-      },
+    if (downloadUrl.isEmpty) {
+      return SizedBox.shrink();
+    }
+    return DownloadButton(
+      title: widget.movie.title,
+      savePath: '${PathUtil.instance.getOutPath()}/${widget.movie.title}.mp4',
+      url: downloadUrl,
+      onDoned: () {},
     );
   }
 
@@ -129,42 +120,42 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
   }
 
   Widget _getHeader() {
-    return Column(
-      children: [
-        //header
-        Card(
-          child: Row(
-            spacing: 5,
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _getCoverWidget(),
-              //titl
-              Expanded(
-                child: Wrap(
-                  spacing: 5,
-                  children: [
-                    Text(
-                      widget.movie.title,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(widget.movie.time),
-                    _getDownloadButton(),
-                  ],
-                ),
-              )
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          //header
+          Card(
+            child: Row(
+              spacing: 5,
+              children: [
+                _getCoverWidget(),
+                //titl
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 5,
+                    children: [
+                      TranslateTextWidget(text: widget.movie.title),
+                      Text(widget.movie.time),
+                      _getDownloadButton(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
-      contentPadding: 0,
+      contentPadding: 2,
       appBar: AppBar(
         title: Text('Content'),
         actions: [
@@ -193,15 +184,8 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
         },
         child: CustomScrollView(
           slivers: [
-            // SliverAppBar(
-            //   automaticallyImplyLeading: false,
-            //   flexibleSpace: _getHeader(),
-            //   expandedHeight: 180,
-            //   collapsedHeight: 180,
-            //   pinned: true,
-            //   floating: true,
-            // ),
             SliverToBoxAdapter(child: _getHeader()),
+            SliverToBoxAdapter(child: Divider()),
             SliverToBoxAdapter(
               child: isLoading ? TLoader() : SizedBox.shrink(),
             ),

@@ -43,11 +43,20 @@ class _HomePageState extends State<HomePage> {
             scrollController.position.maxScrollExtent &&
         lastScroll != scrollController.position.maxScrollExtent) {
       lastScroll = scrollController.position.maxScrollExtent;
-      setState(() {
-        isLoadData = true;
-      });
-      context.read<XMovieProvider>().loadList();
+      if (isLoadData == false) {
+        _loadData();
+      }
     }
+  }
+
+  void _loadData() async {
+    setState(() {
+      isLoadData = true;
+    });
+    await context.read<XMovieProvider>().loadList();
+    setState(() {
+      isLoadData = false;
+    });
   }
 
   @override
@@ -70,14 +79,14 @@ class _HomePageState extends State<HomePage> {
               : SizedBox.shrink(),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<XMovieProvider>().setListOverride(true);
-          init();
-        },
-        child: !isLoadData && isLoading
-            ? TLoader()
-            : CustomScrollView(
+      body: !isLoadData && isLoading
+          ? TLoader()
+          : RefreshIndicator(
+              onRefresh: () async {
+                context.read<XMovieProvider>().setListOverride(true);
+                init();
+              },
+              child: CustomScrollView(
                 controller: scrollController,
                 slivers: [
                   //list
@@ -118,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-      ),
+            ),
     );
   }
 }

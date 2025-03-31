@@ -69,7 +69,7 @@ class DioServices {
       if (url.isEmpty) return res;
       final savePath = '${PathUtil.instance.getCachePath()}/$cacheName';
       final cacheFile = File(savePath);
-      if (!isOverride && await cacheFile.exists()) {
+      if (isOverride == false && await cacheFile.exists()) {
         res = await cacheFile.readAsString();
         return res;
       }
