@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:xp_downloader/app/components/movie_grid_item.dart';
 import 'package:xp_downloader/app/providers/x_movie_provider.dart';
 import 'package:xp_downloader/app/screens/movie_content_screen.dart';
+import 'package:xp_downloader/app/search/x_search.dart';
 
 import '../constants.dart';
 import '../widgets/index.dart';
@@ -68,6 +69,15 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(appTitle),
         actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: XSearch(),
+              );
+            },
+            icon: Icon(Icons.search),
+          ),
           Platform.isLinux
               ? IconButton(
                   onPressed: () {

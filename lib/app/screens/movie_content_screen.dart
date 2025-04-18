@@ -95,7 +95,7 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
               return SizedBox.shrink();
             }
             return SizedBox(
-              width: 130,
+              width: 200,
               height: 150,
               child: CacheImage(
                 url:
@@ -109,7 +109,7 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
       );
     }
     return SizedBox(
-      width: 130,
+      width: 200,
       height: 150,
       child: CacheImage(
         url:
@@ -127,15 +127,18 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
         children: [
           //header
           Card(
-            child: Row(
+            child: Wrap(
               spacing: 5,
+              runSpacing: 5,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
               children: [
                 _getCoverWidget(),
                 //titl
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 5,
                     children: [
                       TranslateTextWidget(text: widget.movie.title),
@@ -192,7 +195,7 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
             SliverGrid.builder(
               itemCount: list.length,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 180,
+                maxCrossAxisExtent: 290,
                 mainAxisExtent: 200,
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
