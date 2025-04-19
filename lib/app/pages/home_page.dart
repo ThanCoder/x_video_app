@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:xp_downloader/app/components/movie_grid_item.dart';
 import 'package:xp_downloader/app/providers/x_movie_provider.dart';
 import 'package:xp_downloader/app/screens/movie_content_screen.dart';
-import 'package:xp_downloader/app/search/x_search.dart';
+import 'package:xp_downloader/app/screens/search_screen.dart';
 
 import '../constants.dart';
 import '../widgets/index.dart';
@@ -71,9 +71,15 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              showSearch(
-                context: context,
-                delegate: XSearch(),
+              // showSearch(
+              //   context: context,
+              //   delegate: XSearch(),
+              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(),
+                ),
               );
             },
             icon: Icon(Icons.search),

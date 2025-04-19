@@ -135,17 +135,15 @@ class _MovieContentScreenState extends State<MovieContentScreen> {
               children: [
                 _getCoverWidget(),
                 //titl
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 5,
-                    children: [
-                      TranslateTextWidget(text: widget.movie.title),
-                      Text(widget.movie.time),
-                      _getDownloadButton(),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 5,
+                  children: [
+                    TranslateTextWidget(text: widget.movie.title),
+                    Text(widget.movie.time),
+                    _getDownloadButton(),
+                  ],
                 )
               ],
             ),
