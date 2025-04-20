@@ -98,6 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
       );
       list = res;
       lastScroll = 0;
+      isOverride = false;
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -163,49 +164,52 @@ class _SearchScreenState extends State<SearchScreen> {
           ? TLoader()
           : RefreshIndicator(
               onRefresh: () async {
-                init();
+                isOverride = true;
+                _search();
               },
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  _getAppBar(),
-                  //list
-                  SliverGrid.builder(
-                    itemCount: list.length,
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisExtent: 220,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
+              child: SafeArea(
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    _getAppBar(),
+                    //list
+                    SliverGrid.builder(
+                      itemCount: list.length,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        mainAxisExtent: 220,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                      ),
+                      itemBuilder: (context, index) {
+                        final movie = list[index];
+                        return MovieGridItem(
+                          movie: movie,
+                          onClicked: (movie) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MovieContentScreen(movie: movie),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
-                    itemBuilder: (context, index) {
-                      final movie = list[index];
-                      return MovieGridItem(
-                        movie: movie,
-                        onClicked: (movie) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  MovieContentScreen(movie: movie),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  //loader
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: isLoadData && isLoading
-                          ? TLoader(
-                              size: 30,
-                            )
-                          : SizedBox.shrink(),
+                    //loader
+                    SliverToBoxAdapter(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: isLoadData && isLoading
+                            ? TLoader(
+                                size: 30,
+                              )
+                            : SizedBox.shrink(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );

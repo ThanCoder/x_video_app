@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +44,10 @@ class _DownloadDialogState extends State<DownloadDialog> {
         widget.saveFullPath,
         cancelToken: cancelToken,
         onReceiveProgress: (count, total) {
+          if (!mounted) return;
           setState(() {
-            setState(() {
-              fileSize = total.toDouble();
-              downloadedSize = count.toDouble();
-            });
+            fileSize = total.toDouble();
+            downloadedSize = count.toDouble();
           });
         },
       );
@@ -67,10 +64,10 @@ class _DownloadDialogState extends State<DownloadDialog> {
   void _downloadCancel() {
     try {
       cancelToken.cancel();
-      final file = File(widget.saveFullPath);
-      if (file.existsSync()) {
-        file.deleteSync();
-      }
+      // final file = File(widget.saveFullPath);
+      // if (file.existsSync()) {
+      //   file.deleteSync();
+      // }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -100,6 +97,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
       actions: [
         TextButton(
           onPressed: () {
+            Navigator.pop(context);
             _downloadCancel();
           },
           child: const Text('Cancel'),

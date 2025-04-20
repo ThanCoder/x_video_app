@@ -46,6 +46,10 @@ class _DownloadButtonState extends State<DownloadButton> {
   }
 
   void _download() async {
+    if (isExists) {
+      showMessage(context, 'Download လုပ်ထားပြီးပါပြီ');
+      return;
+    }
     //check permission
     if (Platform.isAndroid) {
       if (!await ThanPkg.android.permission.isStoragePermissionGranted()) {
@@ -53,6 +57,7 @@ class _DownloadButtonState extends State<DownloadButton> {
         return;
       }
     }
+    if (!mounted) return;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -61,7 +66,9 @@ class _DownloadButtonState extends State<DownloadButton> {
         url: DioServices.instance.getForwardProxyUrl(widget.url),
         saveFullPath: widget.savePath,
         message: widget.title,
-        onError: (msg) {},
+        onError: (msg) {
+          showDialogMessage(context, msg);
+        },
         onSuccess: (savedPath) {
           init();
           widget.onDoned();
